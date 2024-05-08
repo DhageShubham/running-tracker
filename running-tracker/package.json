@@ -16,12 +16,14 @@
     "@chakra-ui/styled-system": "latest",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "date-fns": "^3.6.0",
     "firebase": "^10.11.1",
     "framer-motion": "^11.1.8",
     "next": "14.2.3",
     "react": "^18",
     "react-datepicker": "6.9.0",
     "react-dom": "^18",
+    "react-firebase-hooks": "^5.1.1",
     "react-icons": "latest"
   },
   "devDependencies": {

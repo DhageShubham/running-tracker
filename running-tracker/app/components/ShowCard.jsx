@@ -22,8 +22,6 @@ import {
 
 import { EditIcon } from "@chakra-ui/icons";
 
-import { useRef, useState } from "react";
-
 import "./ShowCard.css";
 
 const ShowCard = ({
@@ -35,31 +33,14 @@ const ShowCard = ({
   timeRec,
   speedRec,
 }) => {
-  const distanceKmRef = useRef(null);
-  const distanceMRef = useRef(null);
-  const timeMinRef = useRef(null);
-  const timeSecRef = useRef(null);
-
-  const [speed, setSpeed] = useState("");
-
-  const calculateSpeed = () => {
-    const distanceKm = +distanceKmRef.current.value || 0;
-    const distanceM = +distanceMRef.current.value || 0;
-    const timeMin = +timeMinRef.current.value || 0;
-    const timeSec = +timeSecRef.current.value || 0;
-
-    const totalDistance = distanceKm + distanceM / 1000;
-    const totalTime = timeMin / 60 + timeSec / 3600;
-    const calSpeed = totalDistance / totalTime;
-    setSpeed(calSpeed);
-    //todo : code to send to firebase
-  };
-
+  timeRec = `${Math.floor(timeRec)} hr ${Math.round(
+    (timeRec % 1) * 60
+  )} min`.replace("0 hr", "");
   return (
     <Card backgroundColor={cardColor}>
       <CardHeader pb="0px">
         <Box display="flex" wrap="true" alignItems="center" gap={2}>
-          <Image boxSize="40px" src={planetURL} alt={weekday} />
+          <Image boxSize="40px" src={planetURL} alt={weekday} title={weekday} />
           <Heading size="md">{weekday}</Heading>
         </Box>
         <IconButton
@@ -68,7 +49,7 @@ const ShowCard = ({
           position="absolute"
           top="5px"
           right="5px"
-          aria-label="Search database"
+          aria-label="Edit"
           bg={inputColor}
           icon={<EditIcon />}
         />
@@ -85,6 +66,7 @@ const ShowCard = ({
               alt="distance"
               backgroundColor={inputColor}
               borderRadius="5px"
+              title="distance covered"
             />
             <Box
               borderRadius="5px"
@@ -106,6 +88,7 @@ const ShowCard = ({
               alt="time"
               backgroundColor={inputColor}
               borderRadius="5px"
+              title="time taken"
             />
             <Box
               borderRadius="5px"
@@ -115,8 +98,7 @@ const ShowCard = ({
               alignItems="center"
               justifyContent="center"
             >
-              {" "}
-              {timeRec} min{" "}
+              {timeRec}
             </Box>
           </Flex>
           <Flex gap={1}>
@@ -126,6 +108,7 @@ const ShowCard = ({
               alt="speed"
               backgroundColor={inputColor}
               borderRadius="5px"
+              title="speed for above distance and time"
             />
             <Box
               borderRadius="5px"
@@ -135,7 +118,6 @@ const ShowCard = ({
               alignItems="center"
               justifyContent="center"
             >
-              {" "}
               {speedRec} km/hr
             </Box>
           </Flex>

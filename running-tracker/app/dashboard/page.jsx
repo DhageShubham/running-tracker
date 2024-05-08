@@ -77,7 +77,7 @@ export default function Home() {
   return (
     <SimpleGrid
       spacing={2}
-      templateColumns="repeat(auto-fill, minmax(200px, 250px))"
+      templateColumns="repeat(auto-fill, minmax(200px, 280px))"
       justifyContent="center"
     >
       <InputCard />

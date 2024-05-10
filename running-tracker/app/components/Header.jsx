@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { Box, Flex, Image, Button, Heading } from "@chakra-ui/react";
-import { SignInButton, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedOut, UserButton } from "@clerk/nextjs";
 
 function Header() {
   return (
@@ -24,7 +24,10 @@ function Header() {
           ></Image>
         </Box>
       </Link>
-      <Heading md cursor="pointer">
+      <Heading
+        fontSize={{ base: "20px", md: "30px", lg: "36px" }}
+        cursor="pointer"
+      >
         <Link href="/"></Link>Running Tracker
       </Heading>
       <Box>

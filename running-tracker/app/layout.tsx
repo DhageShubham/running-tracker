@@ -4,6 +4,8 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -23,6 +25,7 @@ export default function RootLayout({
           <Providers>
             <Header />
             {children}
+            <Footer />
           </Providers>
         </body>
       </html>

@@ -10,10 +10,14 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { collection, query, where } from "firebase/firestore";
 import { db } from "../Database/firebase";
 import { startOfWeek, endOfWeek, format } from "date-fns";
+import { useAuth } from "@clerk/nextjs";
 
 import ShowCard from "../components/ShowCard.jsx";
 export default function Home() {
+  const { isSignedIn, sessionId, userId } = useAuth();
+
   const [entries, setEntries] = useState([]);
+  const [aggregateEntries, setAggregateEntries] = useState({});
 
   const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
   const currentDate = new Date();
@@ -22,16 +26,14 @@ export default function Home() {
 
   const startDateString = format(start, "dd/MM/yyyy");
   const endDateString = format(end, "dd/MM/yyyy");
-  let totalWeekDistance = entries.reduce((a, b) => a + +b.distance, 0);
-  let totalWeekTime = entries.reduce((a, b) => a + +b.time, 0);
-  let averageSpeed = totalWeekDistance / totalWeekTime;
+
   const currentMonthName = new Date().toLocaleString("en", { month: "long" });
 
   /*TODO: do calculations for year card */
 
-  const [docs, loading, error] = useCollection(
+  const [docs] = useCollection(
     query(
-      collection(db, "users", "shubham_dhage", "running_data"),
+      collection(db, "users", userId, "running_data"),
       where("id", ">=", startDateString),
       where("id", "<=", endDateString)
     )
@@ -48,6 +50,30 @@ export default function Home() {
 
     setEntries(entries);
   }, [docs]);
+
+  const aggregateDataQuery = collection(db, "users", userId, "aggregate");
+  const [aggregateSnapshots] = useCollection(aggregateDataQuery);
+
+  useEffect(() => {
+    if (!aggregateSnapshots) return;
+
+    const aggregateEntries = aggregateSnapshots.docs.map((doc) =>
+      doc.data()
+    )[0];
+    if (aggregateEntries) {
+      aggregateEntries.avgWeekSpeed = (
+        aggregateEntries?.totalWeekDistance / aggregateEntries?.totalWeekTime
+      ).toFixed(2);
+      aggregateEntries.avgMonthSpeed = (
+        aggregateEntries?.totalMonthDistance / aggregateEntries?.totalMonthTime
+      ).toFixed(2);
+      aggregateEntries.avgYearSpeed = (
+        aggregateEntries?.totalYearDistance / aggregateEntries?.totalYearTime
+      ).toFixed(2);
+    }
+
+    setAggregateEntries(aggregateEntries);
+  }, [aggregateSnapshots, docs]);
 
   const showDaysCards = entries.map((entry) => {
     return {
@@ -81,36 +107,42 @@ export default function Home() {
       justifyContent="center"
     >
       <InputCard />
-      <ShowCard
-        key="This Week"
-        weekday="This Week"
-        cardColor="#CAD8F3"
-        inputColor="#B4C9EF"
-        planetURL="https://media.tenor.com/RtwD0nqrD5wAAAAj/jimmy-spinner.gif"
-        distRec={totalWeekDistance}
-        timeRec={totalWeekTime}
-        speedRec={averageSpeed}
-      />
-      <ShowCard
-        key={currentMonthName}
-        weekday={currentMonthName}
-        cardColor="#FEE7D6"
-        inputColor="#FDDDC5"
-        planetURL="https://media.tenor.com/RtwD0nqrD5wAAAAj/jimmy-spinner.gif"
-        distRec={totalWeekDistance}
-        timeRec={totalWeekTime}
-        speedRec={averageSpeed}
-      />
-      <ShowCard
-        key="2024"
-        weekday="2024"
-        cardColor="#B2F7EF"
-        inputColor="#CDFAF5"
-        planetURL="https://media.tenor.com/x1eW6Z7pMnIAAAAj/animated-man-running.gif"
-        distRec={totalWeekDistance}
-        timeRec={totalWeekTime}
-        speedRec={averageSpeed}
-      />
+      {aggregateEntries?.totalWeekDistance ? (
+        <ShowCard
+          key="This Week"
+          weekday="This Week"
+          cardColor="#CAD8F3"
+          inputColor="#B4C9EF"
+          planetURL="https://media.tenor.com/RtwD0nqrD5wAAAAj/jimmy-spinner.gif"
+          distRec={aggregateEntries?.totalWeekDistance}
+          timeRec={aggregateEntries?.totalWeekTime}
+          speedRec={aggregateEntries?.avgWeekSpeed}
+        />
+      ) : null}
+      {aggregateEntries?.totalMonthDistance ? (
+        <ShowCard
+          key={currentMonthName}
+          weekday={currentMonthName}
+          cardColor="#FEE7D6"
+          inputColor="#FDDDC5"
+          planetURL="https://media.tenor.com/RtwD0nqrD5wAAAAj/jimmy-spinner.gif"
+          distRec={aggregateEntries?.totalMonthDistance}
+          timeRec={aggregateEntries?.totalMonthTime}
+          speedRec={aggregateEntries?.avgMonthSpeed}
+        />
+      ) : null}
+      {aggregateEntries?.totalYearDistance ? (
+        <ShowCard
+          key="2024"
+          weekday="2024"
+          cardColor="#B2F7EF"
+          inputColor="#CDFAF5"
+          planetURL="https://media.tenor.com/x1eW6Z7pMnIAAAAj/animated-man-running.gif"
+          distRec={aggregateEntries?.totalYearDistance}
+          timeRec={aggregateEntries?.totalYearTime}
+          speedRec={aggregateEntries?.avgYearSpeed}
+        />
+      ) : null}
       {cards}
     </SimpleGrid>
   );

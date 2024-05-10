@@ -2,19 +2,11 @@ import React from "react";
 import {
   Box,
   Image,
-  Text,
-  Button,
-  SimpleGrid,
   Card,
   Heading,
   CardBody,
   CardHeader,
-  CardFooter,
   FormControl,
-  Input,
-  FormLabel,
-  FormHelperText,
-  FormErrorMessage,
   Divider,
   Flex,
   IconButton,
@@ -33,9 +25,8 @@ const ShowCard = ({
   timeRec,
   speedRec,
 }) => {
-  timeRec = `${Math.floor(timeRec)} hr ${Math.round(
-    (timeRec % 1) * 60
-  )} min`.replace("0 hr", "");
+  timeRec = `${Math.floor(timeRec)} hr ${Math.round((timeRec % 1) * 60)} min`;
+
   return (
     <Card backgroundColor={cardColor}>
       <CardHeader pb="0px">

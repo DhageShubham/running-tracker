@@ -24,11 +24,13 @@ import {
   query,
   where,
 } from "firebase/firestore";
-
+import { updateAggregate } from "../Database/helperFunctions";
 import { useRef, useState } from "react";
-import InputRow from "./InputRow";
+import { useAuth } from "@clerk/nextjs";
 
 const InputCard = () => {
+  const { isSignedIn, sessionId, userId } = useAuth();
+
   const distanceKmRef = useRef(null);
   const distanceMRef = useRef(null);
   const timeMinRef = useRef(null);
@@ -39,12 +41,7 @@ const InputCard = () => {
 
   const uploadRecord = async (distance, time, speed) => {
     const currentDateId = new Date(endDate).toLocaleDateString("en-GB");
-    const collectionRef = collection(
-      db,
-      "users",
-      "shubham_dhage",
-      "running_data"
-    );
+    const collectionRef = collection(db, "users", userId, "running_data");
     const querySnapshot = await getDocs(
       query(collectionRef, where("id", "==", currentDateId))
     );
@@ -53,9 +50,9 @@ const InputCard = () => {
       // If no document with the same date ID exists, create a new record
       await addDoc(collectionRef, {
         id: currentDateId,
-        userId: "shubham_dhage",
+        userId: userId,
         timestamp: serverTimestamp(),
-        day: selectedDay, // Get the day of the week
+        day: selectedDay,
         distance: distance,
         time: time,
         speed: speed,
@@ -86,6 +83,14 @@ const InputCard = () => {
       totalTime.toFixed(2),
       calSpeed.toFixed(2)
     );
+    await updateAggregate(userId, {
+      totalWeekDistance: totalDistance,
+      totalMonthDistance: totalDistance,
+      totalYearDistance: totalDistance,
+      totalWeekTime: totalTime,
+      totalMonthTime: totalTime,
+      totalYearTime: totalTime,
+    });
   };
 
   return (

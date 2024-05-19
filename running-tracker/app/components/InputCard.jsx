@@ -11,6 +11,7 @@ import {
   Input,
   Divider,
   Flex,
+  useToast,
 } from "@chakra-ui/react";
 import DatePicker2 from "./ReactDatePicker";
 import { weekdays } from "../constants/weekdays.js";
@@ -29,8 +30,8 @@ import { useRef, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 
 const InputCard = () => {
-  const { isSignedIn, sessionId, userId } = useAuth();
-
+  const { userId } = useAuth();
+  const toast = useToast();
   const distanceKmRef = useRef(null);
   const distanceMRef = useRef(null);
   const timeMinRef = useRef(null);
@@ -90,6 +91,14 @@ const InputCard = () => {
       totalWeekTime: totalTime,
       totalMonthTime: totalTime,
       totalYearTime: totalTime,
+    });
+    toast({
+      title: "run data saved.",
+      description: "keep it up buddy.",
+      position: "top",
+      status: "success",
+      duration: 1500,
+      isClosable: true,
     });
   };
 

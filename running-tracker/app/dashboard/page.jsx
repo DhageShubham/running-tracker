@@ -19,7 +19,6 @@ export default function Home() {
   const [entries, setEntries] = useState([]);
   const [aggregateEntries, setAggregateEntries] = useState({});
 
-  const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
   const currentDate = new Date();
   const start = startOfWeek(currentDate);
   const end = endOfWeek(currentDate);
@@ -105,9 +104,10 @@ export default function Home() {
       spacing={2}
       templateColumns="repeat(auto-fill, minmax(200px, 280px))"
       justifyContent="center"
+      marginBlockEnd="60px"
     >
       <InputCard />
-      {aggregateEntries?.totalWeekDistance ? (
+      {aggregateEntries?.totalWeekDistance && cards.length > 0 ? (
         <ShowCard
           key="This Week"
           weekday="This Week"

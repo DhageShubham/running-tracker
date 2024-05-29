@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase"; // Assuming you have configured Firebase
 import { getWeekNumber, getCurrentMonth } from "../utils";
 
@@ -55,36 +55,42 @@ export const updateAggregate = async (userId, data) => {
     const updatedData = {};
     if (!newWeek) {
       updatedData.totalWeekDistance =
-        currentData.totalWeekDistance + data.totalWeekDistance;
+        currentData.totalWeekDistance + +data.totalWeekDistance;
       updatedData.totalWeekTime =
-        currentData.totalWeekTime + data.totalWeekTime;
+        currentData.totalWeekTime + +data.totalWeekTime;
     } else {
-      updatedData.totalWeekTime = data.totalWeekTime;
-      updatedData.totalWeekDistance = data.totalWeekDistance;
-      updatedData.lastUpdatedWeek = getWeekNumber();
+      updatedData.totalWeekTime = +data.totalWeekTime;
+      updatedData.totalWeekDistance = +data.totalWeekDistance;
     }
 
     if (!newMonth) {
       updatedData.totalMonthDistance =
-        currentData.totalMonthDistance + data.totalMonthDistance;
+        currentData.totalMonthDistance + +data.totalMonthDistance;
       updatedData.totalMonthTime =
-        currentData.totalMonthTime + data.totalMonthTime;
+        currentData.totalMonthTime + +data.totalMonthTime;
     } else {
-      updatedData.totalMonthTime = data.totalMonthTime;
-      updatedData.totalMonthDistance = data.totalMonthDistance;
-      updatedData.lastUpdatedMonth = getCurrentMonth();
+      updatedData.totalMonthTime = +data.totalMonthTime;
+      updatedData.totalMonthDistance = +data.totalMonthDistance;
     }
 
     if (!newYear) {
       updatedData.totalYearDistance =
-        currentData.totalYearDistance + data.totalYearDistance;
+        currentData.totalYearDistance + +data.totalYearDistance;
       updatedData.totalYearTime =
-        currentData.totalYearTime + data.totalYearTime;
+        currentData.totalYearTime + +data.totalYearTime;
     } else {
-      updatedData.totalYearTime = data.totalYearTime;
-      updatedData.totalYearDistance = data.totalYearDistance;
-      updatedData.lastUpdatedYear = new Date().getFullYear();
+      updatedData.totalYearTime = +data.totalYearTime;
+      updatedData.totalYearDistance = +data.totalYearDistance;
     }
+    updatedData.totalWeekDistance = updatedData.totalWeekDistance.toFixed(2);
+    updatedData.totalMonthDistance = updatedData.totalMonthDistance.toFixed(2);
+    updatedData.totalYearDistance = updatedData.totalYearDistance.toFixed(2);
+    updatedData.totalMonthTime = updatedData.totalMonthTime.toFixed(2);
+    updatedData.totalWeekTime = updatedData.totalWeekTime.toFixed(2);
+    updatedData.totalYearTime = updatedData.totalYearTime.toFixed(2);
+    updatedData.lastUpdatedWeek = getWeekNumber();
+    updatedData.lastUpdatedMonth = getCurrentMonth();
+    updatedData.lastUpdatedYear = new Date().getFullYear();
 
     // Set the updated data in the aggregate document
     if (docSnapshot.exists()) {

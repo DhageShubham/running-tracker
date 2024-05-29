@@ -24,7 +24,6 @@ export default function Home() {
   const end = endOfWeek(currentDate);
 
   const startDateString = format(start, "dd/MM/yyyy");
-  const endDateString = format(end, "dd/MM/yyyy");
 
   const currentMonthName = new Date().toLocaleString("en", { month: "long" });
 
@@ -33,8 +32,7 @@ export default function Home() {
   const [docs] = useCollection(
     query(
       collection(db, "users", userId, "running_data"),
-      where("id", ">=", startDateString),
-      where("id", "<=", endDateString)
+      where("id", ">=", startDateString)
     )
   );
 
@@ -107,7 +105,7 @@ export default function Home() {
       marginBlockEnd="60px"
     >
       <InputCard />
-      {aggregateEntries?.totalWeekDistance && cards.length > 0 ? (
+      {aggregateEntries?.totalWeekDistance && showDaysCards.length > 0 ? (
         <ShowCard
           key="This Week"
           weekday="This Week"

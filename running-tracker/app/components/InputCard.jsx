@@ -85,12 +85,12 @@ const InputCard = () => {
       calSpeed.toFixed(2)
     );
     await updateAggregate(userId, {
-      totalWeekDistance: totalDistance,
-      totalMonthDistance: totalDistance,
-      totalYearDistance: totalDistance,
-      totalWeekTime: totalTime,
-      totalMonthTime: totalTime,
-      totalYearTime: totalTime,
+      totalWeekDistance: totalDistance.toFixed(2),
+      totalMonthDistance: totalDistance.toFixed(2),
+      totalYearDistance: totalDistance.toFixed(2),
+      totalWeekTime: +totalTime.toFixed(2),
+      totalMonthTime: +totalTime.toFixed(2),
+      totalYearTime: +totalTime.toFixed(2),
     });
     toast({
       title: "run data saved.",
